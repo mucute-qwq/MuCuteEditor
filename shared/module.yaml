@@ -1,0 +1,25 @@
+product:
+  type: kmp/lib
+  platforms: [ jvm, android, iosArm64, iosSimulatorArm64, wasmJs ]
+
+dependencies:
+  - $compose.runtime: exported
+  - $compose.foundation: exported
+  - $compose.material3: exported
+  - $compose.ui: exported
+  - $compose.components.resources: exported
+  - $compose.preview
+  - $compose.hotReload.runtimeApi
+  - $libs.androidx.lifecycle.viewmodel.compose
+  - $libs.androidx.lifecycle.runtime.compose
+
+dependencies@android:
+  - $compose.uiTooling
+
+settings:
+  compose:
+    enabled: true
+    resources:
+      packageName: io.github.mucute.qwq.mucuteeditor.resources
+      # Generate public accessors so other modules (and previews) can use Res.*
+      exposedAccessors: true
