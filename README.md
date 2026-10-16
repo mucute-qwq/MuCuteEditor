@@ -1,2 +1,2 @@
 # MuCuteEditor
-A cross-platform code editor
+A cross-platform code editor (In progressing)
