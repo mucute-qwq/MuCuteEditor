@@ -2,7 +2,6 @@ product: ios/app
 
 dependencies:
   - //shared
-  - $compose.ui
 
 settings:
   compose: enabled

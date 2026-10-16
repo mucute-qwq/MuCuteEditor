@@ -8,13 +8,10 @@ dependencies:
   - $compose.material3: exported
   - $compose.ui: exported
   - $compose.components.resources: exported
-  - $compose.preview
+  - $compose.preview: exported
   - $compose.hotReload.runtimeApi
   - $libs.androidx.lifecycle.viewmodel.compose
   - $libs.androidx.lifecycle.runtime.compose
-
-dependencies@android:
-  - $compose.uiTooling
 
 settings:
   compose:

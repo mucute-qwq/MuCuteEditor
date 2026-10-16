@@ -3,7 +3,6 @@ product: android/app
 dependencies:
   - //shared
   - $libs.androidx.activity.compose
-  - $compose.preview
   - $compose.uiTooling
 
 settings:
@@ -11,3 +10,7 @@ settings:
   android:
     namespace: io.github.mucute.qwq.mucuteeditor
     applicationId: io.github.mucute.qwq.mucuteeditor
+    targetSdk: 37
+    minSdk: 26
+    versionName: 1.0
+    versionCode: 1
