@@ -1,8 +1,10 @@
 package io.github.mucute.qwq.mucuteeditor.core.text
 
+import io.github.mucute.qwq.mucuteeditor.core.data.LinkedList
+
 class PieceTableImpl : PieceTable {
 
-    private val pieces: MutableList<Piece> = LinkedHashSet(0)
+    private val pieces = LinkedList<Piece>()
 
     private var _count: Long = 0L
 
