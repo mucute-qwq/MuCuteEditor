@@ -1,25 +1,8 @@
 package io.github.mucute.qwq.mucuteeditor.core.text
 
-interface Piece {
-
-    val pos: Long
-
-    val content: ByteArray
-
-    val count: Int
-        get() = content.size
-
-    companion object {
-
-        fun of(pos: Long, content: ByteArray) = PieceImpl(
-            pos = pos,
-            content = content
-        )
-
-        fun of(content: ByteArray) = of(0, content)
-
-        fun of() = of(ByteArray(0))
-
-    }
-
-}
+data class Piece(
+    var pos: Int,
+    var bufferPos: Int,
+    var count: Int,
+    var type: PieceType,
+)

@@ -15,6 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
+            byteArrayOf().copyInto()
             MaterialTheme {
                 MuCuteEditor(
                     Modifier

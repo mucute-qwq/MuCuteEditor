@@ -305,7 +305,7 @@ class LinkedList<E> : MutableList<E> {
     private fun checkIndex(index: Int, allowEqualsSize: Boolean = false) {
         val range = if (allowEqualsSize) 0..size else indices
         val expression = if (allowEqualsSize) "[0, $size]" else "[0, $size)"
-        check(0 in range) {
+        check(index in range) {
             "Index $index out of range $expression"
         }
     }
