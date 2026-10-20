@@ -79,6 +79,7 @@ class PieceTableImpl : PieceTable {
         if (piece.pos == pos) {
             appendContent(content)
             var index = iterator.previousIndex()
+
             pieces.add(
                 index,
                 Piece(pos, bufferCount - content.size, content.size, PieceType.Append)
@@ -96,7 +97,7 @@ class PieceTableImpl : PieceTable {
         var index = iterator.nextIndex()
         val leftCount = pos - piece.pos
         val rightCount = piece.count - leftCount
-        println(rightCount)
+
         piece.count = leftCount
         pieces.add(
             index,
@@ -120,31 +121,44 @@ class PieceTableImpl : PieceTable {
 
     override fun append(content: ByteArray) = insert(contentCount, content)
 
+    override fun deleteAt(pos: Int) = delete(pos, pos + 1)
+
     override fun delete(startPos: Int, endPos: Int) {
+        check(startPos < endPos) {
+            "Start index $startPos >= end index $endPos"
+        }
         checkPos(startPos)
         checkPos(endPos, allowEqualsCount = true)
 
+        val startPieceIndex = findPiece(startPos)
+        val endPieceIndex = findPiece(endPos, startPieceIndex)
+        val deletedCount = endPos - startPos
 
-    }
-
-    override fun get(pos: Int): Byte {
-        checkPos(pos)
-
-        for ((piecePos, bufferPos, count, type) in pieces) {
-            val range = piecePos until piecePos + count
-            if (pos !in range) {
-                continue
+        if (startPieceIndex == endPieceIndex) {
+            val piece = pieces[startPieceIndex]
+            val piecePos = piece.pos
+            val pieceCount = piece.count
+            if (startPos == piecePos && endPos == piecePos + pieceCount) {
+                pieces.removeAt(startPieceIndex)
+                pieces.listIterator(startPieceIndex).forEach { it.pos -= deletedCount }
+                return
             }
 
-            val offset = pos - piecePos
-            return when (type) {
-                PieceType.Origin -> origin[bufferPos + offset]
-                PieceType.Append -> buffer[bufferPos + offset]
+            if (startPos == piecePos) {
+                piece.bufferPos += deletedCount
+                piece.count -= deletedCount
+                return
             }
+
+
+            return
         }
 
-        error("Unreachable code")
+
+
     }
+
+    override fun get(pos: Int) = get(pos, pos + 1)[0]
 
     override fun getString(startPos: Int, endPos: Int) = get(startPos, endPos).decodeToString()
 
@@ -180,39 +194,30 @@ class PieceTableImpl : PieceTable {
             if (startPos >= piecePos && endPos <= piecePos + count) {
                 val startIndex = bufferPos + (startPos - piecePos)
                 val endIndex = startIndex + (endPos - startPos)
-                if (startIndex < endIndex) {
-                    ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
-                }
+                ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
                 return
             }
 
             if (startPos >= piecePos && endPos > piecePos + count) {
                 val startIndex = bufferPos + (startPos - piecePos)
                 val endIndex = bufferPos + count
-                if (startIndex < endIndex) {
-                    ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
-                    offset += endIndex - startIndex
-                }
+                ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
+                offset += endIndex - startIndex
                 continue
             }
 
             if (startPos <= piecePos && endPos <= piecePos + count) {
                 val startIndex = bufferPos
                 val endIndex = bufferPos + (endPos - piecePos)
-                if (startIndex < endIndex) {
-                    ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
-                    offset += endIndex - startIndex
-                }
-                continue
+                ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
+                return
             }
 
             if (startPos <= piecePos && endPos > piecePos + count) {
                 val startIndex = bufferPos
                 val endIndex = bufferPos + count
-                if (startIndex < endIndex) {
-                    ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
-                    offset += endIndex - startIndex
-                }
+                ByteArrayUtil.arrayCopy(source, destination, offset, startIndex, endIndex)
+                offset += endIndex - startIndex
                 continue
             }
 
@@ -221,6 +226,28 @@ class PieceTableImpl : PieceTable {
     }
 
     override fun content() = getString(0, contentCount)
+
+    private fun findPiece(targetPos: Int, startPieceIndex: Int = 0): Int {
+        var pieceIndex = startPieceIndex
+        for ((index, piece) in pieces.listIterator(startPieceIndex).withIndex()) {
+
+            if (index + piece.count < targetPos) {
+                pieceIndex++
+                continue
+            }
+
+            if (index + piece.count == targetPos) {
+                pieceIndex++
+                break
+            }
+
+            if (index + piece.count > targetPos) {
+                break
+            }
+
+        }
+        return pieceIndex
+    }
 
     private fun appendContent(content: ByteArray) {
         if (content.size <= bufferRemaining) {

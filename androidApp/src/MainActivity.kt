@@ -15,13 +15,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            byteArrayOf().copyInto()
+            // byteArrayOf().copyInto()
             MaterialTheme {
-                MuCuteEditor(
-                    Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding()
-                )
+//                MuCuteEditor(
+//                    Modifier
+//                        .fillMaxSize()
+//                        .statusBarsPadding()
+//                )
             }
         }
     }

@@ -18,6 +18,8 @@ interface PieceTable {
 
     fun append(content: ByteArray)
 
+    fun deleteAt(pos: Int)
+
     fun delete(startPos: Int, endPos: Int)
 
     operator fun get(pos: Int): Byte

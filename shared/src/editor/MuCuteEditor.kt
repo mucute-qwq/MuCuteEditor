@@ -26,9 +26,14 @@ fun MuCuteEditor(
 
     LaunchedEffect(Unit) {
         val pieceTable = props.text
+        // Hello
+        // o
+
+        // Hello
+        // H
         pieceTable.open("Hello")
-        pieceTable.append(" ")
-        pieceTable.append("World")
+        pieceTable.delete(0, 4)
+        pieceTable.delete(1, 5)
 
         println(pieceTable.listPiece())
         println(pieceTable.content())
